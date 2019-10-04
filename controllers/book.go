@@ -5,6 +5,7 @@ import (
 	"books-list/repository/book"
 	"books-list/utils"
 	"database/sql"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 )
@@ -40,21 +41,21 @@ func (c Controller ) GetBooks(db *sql.DB) http.HandlerFunc {
 }
 
 
-//func (c Controller ) GetBook (db *sql.DB) http.HandlerFunc {
-//	return func (w http.ResponseWriter, r *http.Request){
-//		var book model.Book
-//		params := mux.Vars(r);
-//		var error2 model.Error
-//		bookRepo := bookRepository.BookRepository{}
-//		book, err := bookRepo.GetBook(db,book,books,params)
-//
-//		if err!=nil {
-//			error2.Message= "Server Error"
-//			utils.SendError(w,http.StatusInternalServerError, error2)
-//			return
-//		}
-//
-//		w.Header().Set("Content-Type", "application/json")
-//		utils.SendSuccess(w,book)
-//	}
-//}
+func (c Controller ) GetBook (db *sql.DB) http.HandlerFunc {
+	return func (w http.ResponseWriter, r *http.Request){
+		var book model.Book
+		params := mux.Vars(r);
+		var error2 model.Error
+		bookRepo := bookRepository.BookRepository{}
+		book, err := bookRepo.GetBook(db,book,books,params)
+
+		if err!=nil {
+			error2.Message= "Server Error"
+			utils.SendError(w,http.StatusInternalServerError, error2)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		utils.SendSuccess(w,book)
+	}
+}

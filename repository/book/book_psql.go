@@ -30,15 +30,15 @@ func (b BookRepository) GetBooks(db *sql.DB, book model.Book , books []model.Boo
 	return books, nil
 }
 
-//func (b BookRepository ) GetBook(db *sql.DB, book model.Book , books []model.Book, params map[string]string ) ( model.Book , error) {
-//
-//	rows := db.QueryRow("select * from books where id=$1", params["id"])
-//
-//	err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Year);
-//
-//	if err != nil {
-//		return model.Book{}, err
-//	}
-//
-//	return book,nil
-//}
+func (b BookRepository ) GetBook(db *sql.DB, book model.Book , books []model.Book, params map[string]string ) ( model.Book , error) {
+
+	rows := db.QueryRow("select * from books where id=$1", params["id"])
+
+	err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Year);
+
+	if err != nil {
+		return model.Book{}, err
+	}
+
+	return book,nil
+}
