@@ -42,7 +42,7 @@ func main(){
 
 	router.HandleFunc("/books", controller.GetBooks(db)).Methods("GET")
 	router.HandleFunc("/books/{id}", controller.GetBook(db)).Methods("GET")
-	router.HandleFunc("/books", addBook).Methods("POST")
+	router.HandleFunc("/books", controller.AddBook(db)).Methods("POST")
 	router.HandleFunc("/books", updateBook).Methods("PUT")
 	router.HandleFunc("/books/{id}", removeBook).Methods("DELETE")
 
@@ -82,20 +82,20 @@ func main(){
 //
 //}
 
-func addBook(w http.ResponseWriter, r *http.Request){  // w is the response object and r is the request object
-	var book model.Book
-	var bookID int
-
-	json.NewDecoder(r.Body).Decode(&book);
-
-	err := db.QueryRow("insert into books (title, author, year) values($1,$2,$3) RETURNING id;",
-		book.Title,book.Author, book.Year).Scan(&bookID)
-
-	logFatal(err);
-
-	json.NewEncoder(w).Encode(bookID)
-
-}
+//func addBook(w http.ResponseWriter, r *http.Request){  // w is the response object and r is the request object
+//	var book model.Book
+//	var bookID int
+//
+//	json.NewDecoder(r.Body).Decode(&book);
+//
+//	err := db.QueryRow("insert into books (title, author, year) values($1,$2,$3) RETURNING id;",
+//		book.Title,book.Author, book.Year).Scan(&bookID)
+//
+//	logFatal(err);
+//
+//	json.NewEncoder(w).Encode(bookID)
+//
+//}
 
 func updateBook(w http.ResponseWriter, r *http.Request){
 	var book model.Book

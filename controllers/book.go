@@ -5,6 +5,7 @@ import (
 	"books-list/repository/book"
 	"books-list/utils"
 	"database/sql"
+	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -36,7 +37,7 @@ func (c Controller ) GetBooks(db *sql.DB) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		utils.SendSuccess(w,books);
-
+		return
 	}
 }
 
@@ -57,5 +58,24 @@ func (c Controller ) GetBook (db *sql.DB) http.HandlerFunc {
 
 		w.Header().Set("Content-Type", "application/json")
 		utils.SendSuccess(w,book)
+		return
+	}
+}
+
+func (c Controller ) AddBook (db *sql.DB) http.HandlerFunc {
+	return func (w http.ResponseWriter, r *http.Request){  // w is the response object and r is the request object
+		var book model.Book
+		var bookID int
+		json.NewDecoder(r.Body).Decode(&book);
+		bookRepo := bookRepository.BookRepository{}
+		var error2 model.Error
+		bookID,err := bookRepo.AddBook(db,book,bookID)
+		if err != nil {
+			error2.Message="Server Error"
+			utils.SendError(w, http.StatusInternalServerError, error2)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		utils.SendSuccess(w,bookID)
 	}
 }
