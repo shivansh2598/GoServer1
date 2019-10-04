@@ -1,16 +1,15 @@
 package main
 
 import (
+	"books-list/controllers"
 	"books-list/driver"
-	"encoding/json"
+	"books-list/model"
+	"database/sql"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/subosito/gotenv"
 	"log"
 	"net/http"
-	"database/sql"
-	"github.com/subosito/gotenv"
-	"books-list/model"
-	"books-list/controllers"
 )
 
 //type Book struct {
@@ -44,7 +43,7 @@ func main(){
 	router.HandleFunc("/books/{id}", controller.GetBook(db)).Methods("GET")
 	router.HandleFunc("/books", controller.AddBook(db)).Methods("POST")
 	router.HandleFunc("/books", controller.UpdateBook(db)).Methods("PUT")
-	router.HandleFunc("/books/{id}", removeBook).Methods("DELETE")
+	router.HandleFunc("/books/{id}", controller.RemoveBook(db)).Methods("DELETE")
 
 	fmt.Println("Server is runnig at port 8000");
 	log.Fatal(http.ListenAndServe(":8000", router))
@@ -110,15 +109,15 @@ func main(){
 //	json.NewEncoder(w).Encode(rowsUpdated);
 //}
 
-func removeBook(w http.ResponseWriter, r *http.Request){
-	params := mux.Vars(r);
-
-	result, err := db.Exec("delete from books where id = $1", params["id"])
-	logFatal(err)
-
-	rowsUpdated,err := result.RowsAffected();
-	logFatal(err);
-
-	json.NewEncoder(w).Encode(rowsUpdated);
-}
+//func removeBook(w http.ResponseWriter, r *http.Request){
+//	params := mux.Vars(r);
+//
+//	result, err := db.Exec("delete from books where id = $1", params["id"])
+//	logFatal(err)
+//
+//	rowsUpdated,err := result.RowsAffected();
+//	logFatal(err);
+//
+//	json.NewEncoder(w).Encode(rowsUpdated);
+//}
 

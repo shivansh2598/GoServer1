@@ -20,15 +20,14 @@ func logFatal(err error){
 type Controller struct {}
 
 var books []model.Book
+var error2 model.Error
 
 func (c Controller ) GetBooks(db *sql.DB) http.HandlerFunc {
 	return func (w http.ResponseWriter, r *http.Request){
 		var book model.Book
-		var error2 model.Error
-		books = []model.Book{}
+
 		bookRepo := bookRepository.BookRepository{}
 		books,err := bookRepo.GetBooks(db, book , books)
-
 		if err != nil {
 			error2.Message = "Server Error"
 			utils.SendError(w,http.StatusInternalServerError, error2)
@@ -46,7 +45,6 @@ func (c Controller ) GetBook (db *sql.DB) http.HandlerFunc {
 	return func (w http.ResponseWriter, r *http.Request){
 		var book model.Book
 		params := mux.Vars(r);
-		var error2 model.Error
 		bookRepo := bookRepository.BookRepository{}
 		book, err := bookRepo.GetBook(db,book,books,params)
 
@@ -68,7 +66,6 @@ func (c Controller ) AddBook (db *sql.DB) http.HandlerFunc {
 		var bookID int
 		json.NewDecoder(r.Body).Decode(&book);
 		bookRepo := bookRepository.BookRepository{}
-		var error2 model.Error
 		bookID,err := bookRepo.AddBook(db,book,bookID)
 		if err != nil {
 			error2.Message="Server Error"
@@ -85,13 +82,29 @@ func (c Controller ) UpdateBook (db *sql.DB ) http.HandlerFunc {
 	return func (w http.ResponseWriter, r *http.Request){
 		var book model.Book
 		json.NewDecoder(r.Body).Decode(&book)
-		var error2 model.Error
 		BookRepo := bookRepository.BookRepository{}
 		RowsUpdated,err := BookRepo.UpdateBook(db, book)
 		if err !=nil {
 			error2.Message="Server Error"
 			utils.SendError(w, http.StatusInternalServerError, error2)
 		}
+		w.Header().Set("Content-Type", "application/json")
+		utils.SendSuccess(w,RowsUpdated)
+		return
+	}
+}
+
+func (c Controller ) RemoveBook (db *sql.DB ) http.HandlerFunc {
+	return func (w http.ResponseWriter, r *http.Request){
+		params := mux.Vars(r)
+		BookRepo := bookRepository.BookRepository{}
+		RowsUpdated,err := BookRepo.RemoveBook(db, params)
+		if err != nil {
+			error2.Message="Server Error"
+			utils.SendError(w,http.StatusInternalServerError,error2)
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
 		utils.SendSuccess(w,RowsUpdated)
 		return
