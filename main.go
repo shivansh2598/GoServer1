@@ -43,7 +43,7 @@ func main(){
 	router.HandleFunc("/books", controller.GetBooks(db)).Methods("GET")
 	router.HandleFunc("/books/{id}", controller.GetBook(db)).Methods("GET")
 	router.HandleFunc("/books", controller.AddBook(db)).Methods("POST")
-	router.HandleFunc("/books", updateBook).Methods("PUT")
+	router.HandleFunc("/books", controller.UpdateBook(db)).Methods("PUT")
 	router.HandleFunc("/books/{id}", removeBook).Methods("DELETE")
 
 	fmt.Println("Server is runnig at port 8000");
@@ -97,18 +97,18 @@ func main(){
 //
 //}
 
-func updateBook(w http.ResponseWriter, r *http.Request){
-	var book model.Book
-	json.NewDecoder(r.Body).Decode(&book)
-
-	result,err := db.Exec("update books set title=$1, author=$2, year=$3 where id=$4 RETURNING id", &book.Title, &book.Author,&book.Year,&book.ID);
-	logFatal(err)
-
-	rowsUpdated, err := result.RowsAffected();
-	logFatal(err);
-
-	json.NewEncoder(w).Encode(rowsUpdated);
-}
+//func updateBook(w http.ResponseWriter, r *http.Request){
+//	var book model.Book
+//	json.NewDecoder(r.Body).Decode(&book)
+//
+//	result,err := db.Exec("update books set title=$1, author=$2, year=$3 where id=$4 RETURNING id", &book.Title, &book.Author,&book.Year,&book.ID);
+//	logFatal(err)
+//
+//	rowsUpdated, err := result.RowsAffected();
+//	logFatal(err);
+//
+//	json.NewEncoder(w).Encode(rowsUpdated);
+//}
 
 func removeBook(w http.ResponseWriter, r *http.Request){
 	params := mux.Vars(r);

@@ -77,5 +77,23 @@ func (c Controller ) AddBook (db *sql.DB) http.HandlerFunc {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		utils.SendSuccess(w,bookID)
+		return
+	}
+}
+
+func (c Controller ) UpdateBook (db *sql.DB ) http.HandlerFunc {
+	return func (w http.ResponseWriter, r *http.Request){
+		var book model.Book
+		json.NewDecoder(r.Body).Decode(&book)
+		var error2 model.Error
+		BookRepo := bookRepository.BookRepository{}
+		RowsUpdated,err := BookRepo.UpdateBook(db, book)
+		if err !=nil {
+			error2.Message="Server Error"
+			utils.SendError(w, http.StatusInternalServerError, error2)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		utils.SendSuccess(w,RowsUpdated)
+		return
 	}
 }

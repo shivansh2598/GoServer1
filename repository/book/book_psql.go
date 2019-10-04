@@ -54,3 +54,18 @@ func (b BookRepository ) AddBook(db *sql.DB, book model.Book, bookID int) ( int,
 
 	return bookID,nil;
 }
+
+func (b BookRepository ) UpdateBook(db *sql.DB , book model.Book ) ( int64 , error ){
+	result,err := db.Exec("update books set title=$1, author=$2, year=$3 where id=$4 RETURNING id", &book.Title, &book.Author,&book.Year,&book.ID);
+	if err !=nil {
+		return -1, err
+	}
+
+	rowsUpdated, err := result.RowsAffected();
+
+	if err != nil {
+		return -1,err
+	}
+
+	return rowsUpdated,nil
+}
