@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 	"github.com/subosito/gotenv"
 	"log"
 	"net/http"
@@ -46,7 +47,8 @@ func main(){
 	router.HandleFunc("/books/{id}", controller.RemoveBook(db)).Methods("DELETE")
 
 	fmt.Println("Server is runnig at port 8000");
-	log.Fatal(http.ListenAndServe(":8000", router))
+	handler := cors.Default().Handler(router)
+	log.Fatal(http.ListenAndServe(":8000", handler))
 }
 
 
