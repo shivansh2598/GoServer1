@@ -46,9 +46,7 @@ func main(){
 	router.HandleFunc("/books", controller.UpdateBook(db)).Methods("PUT")
 	router.HandleFunc("/books/{id}", controller.RemoveBook(db)).Methods("DELETE")
 
-	fmt.Println("Server is runnig at port 8000");
-	handler := cors.Default().Handler(router)
-	log.Fatal(http.ListenAndServe(":8000", handler))
+	log.Fatal(http.ListenAndServe(":8000", r))
 }
 
 
