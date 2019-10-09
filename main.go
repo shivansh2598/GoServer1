@@ -45,8 +45,9 @@ func main(){
 	router.HandleFunc("/books", controller.AddBook(db)).Methods("POST")
 	router.HandleFunc("/books", controller.UpdateBook(db)).Methods("PUT")
 	router.HandleFunc("/books/{id}", controller.RemoveBook(db)).Methods("DELETE")
-
-	log.Fatal(http.ListenAndServe(":8000", r))
+	fmt.println("server started")
+	cors_route := Cors.Default().Handler(router) //cors enabled
+	log.Fatal(http.ListenAndServe(":8000", cors_route))
 }
 
 
