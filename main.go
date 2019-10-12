@@ -51,6 +51,7 @@ func main(){
 
 	fmt.Println("Server is running at port 8000");
 	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(headers,methods,origins)(router)))
+
 }
 
 
