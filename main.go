@@ -7,7 +7,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/gorilla/mux"
-	"github.com/rs/cors"
+	"github.com/gorilla/handlers"
 	"github.com/subosito/gotenv"
 	"log"
 	"net/http"
@@ -39,6 +39,9 @@ func main(){
  	controller := controllers.Controller{}
 
 	router := mux.NewRouter();
+	headers :=  handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
+	origins := handlers.AllowedOrigins([]string {"*"})
 
 	router.HandleFunc("/books", controller.GetBooks(db)).Methods("GET")
 	router.HandleFunc("/books/{id}", controller.GetBook(db)).Methods("GET")
@@ -46,9 +49,8 @@ func main(){
 	router.HandleFunc("/books", controller.UpdateBook(db)).Methods("PUT")
 	router.HandleFunc("/books/{id}", controller.RemoveBook(db)).Methods("DELETE")
 
-	fmt.Println("Server is runnig at port 8000");
-	handler := cors.Default().Handler(router)
-	log.Fatal(http.ListenAndServe(":8000", handler))
+	fmt.Println("Server is running at port 8000");
+	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(headers,methods,origins)(router)))
 }
 
 
