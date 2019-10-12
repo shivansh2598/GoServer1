@@ -39,18 +39,21 @@ func main(){
  	controller := controllers.Controller{}
 
 	router := mux.NewRouter();
+
+	//cors enabled code snippet
 	headers :=  handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 	methods := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE"})
 	origins := handlers.AllowedOrigins([]string {"*"})
 
+
+	//router method
 	router.HandleFunc("/books", controller.GetBooks(db)).Methods("GET")
 	router.HandleFunc("/books/{id}", controller.GetBook(db)).Methods("GET")
 	router.HandleFunc("/books", controller.AddBook(db)).Methods("POST")
 	router.HandleFunc("/books", controller.UpdateBook(db)).Methods("PUT")
 	router.HandleFunc("/books/{id}", controller.RemoveBook(db)).Methods("DELETE")
-
 	fmt.Println("Server is running at port 8000");
-	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(headers,methods,origins)(router)))
+	log.Fatal(http.ListenAndServe(":8000", handlers.CORS(headers,methods,origins)(router))) //server listens at port 8000
 
 }
 
